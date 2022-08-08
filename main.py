@@ -18,9 +18,9 @@ import json
 #         file.write(f"https://www.bundestag.de{i}\n")
     
 data = []
-person_social_links = []
 
-with open("list_urls.txt", "r") as file:
+
+with open("list_urls.txt", "r", encoding="utf-8") as file:
     
     lines = [line.strip() for line in file.readlines()]
 
@@ -28,26 +28,26 @@ with open("list_urls.txt", "r") as file:
         r = requests.get(link)
         req = r.content
         soup = BeautifulSoup(req, "lxml")
-        # person = soup.find(class_="bt-biografie-name").find("h3").text
-        # person_name_company = person.strip().split(",")
-        # person_name = person_name_company[0].strip()
-        # person_company = person_name_company[1].strip()
-        # person_profession = soup.find("div", class_="bt-biografie-beruf").find('p').text
-        # person_social = soup.find("ul", class_="bt-linkliste").find_all("li")
+        person = soup.find(class_="bt-biografie-name").find("h3").text
+        person_name_company = person.strip().split(",")
+        person_name = person_name_company[0].strip()
+        person_company = person_name_company[1].strip()
+        person_profession = soup.find("div", class_="bt-biografie-beruf").find('p').text
+        person_social = soup.find("ul", class_="bt-linkliste").find_all("a", class_="bt-link-extern")
         
+        person_social_links = []
         for links in person_social:
-            add_link = links.find("a").get("href")
-            person_social_links.append(add_link)
-        print(person_social_links)
-
-        # persons_info = {
-        #         "person_name": person_name,
-        #         "person_company": person_company,
-        #         "person_profession": person_profession,
-        #         "person_social": person_social_links
-        # }
-            
-        # data.append(persons_info)
+            person_social_links.append(f"{links.get('href')}")
         
-        # with open("persons.json", "a", encoding="utf-8") as file:
-        #     json.dump(data, file, indent=4, ensure_ascii=False)
+
+        persons_info = {
+                "person_name": person_name,
+                "person_company": person_company,
+                "person_profession": person_profession,
+                "person_social": person_social_links
+        }
+            
+        data.append(persons_info)
+        
+with open("persons.json", "a", encoding="utf-8") as file:
+    json.dump(data, file, indent=4, ensure_ascii=False)
