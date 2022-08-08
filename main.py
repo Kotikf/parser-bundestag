@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+import json
 
 # links_list = []
 # for i in range(0, 740,20): #740
@@ -15,31 +16,38 @@ from bs4 import BeautifulSoup
 # with open("list_urls.txt", "a") as file:
 #     for i in links_list:
 #         file.write(f"https://www.bundestag.de{i}\n")
-        
+    
+data = []
+person_social_links = []
 
 with open("list_urls.txt", "r") as file:
     
-
     lines = [line.strip() for line in file.readlines()]
 
-    # for link in lines:
-    #     r = requests.get(link)
-    #     req = r.content
-    #     soup = BeautifulSoup(req, "lxml")
-    #     person = soup.find(class_="bt-biografie-name").find("h3").text
-    #     person_name_company = person.strip().split(",")
-    #     person_name = person_name_company[0]
-    #     person_company = person_name_company[1]
-    #     print(person_company.text)
-    #     print(person_name.text)
-
-    for link in lines:
-        r = requests.get("https://www.bundestag.de/abgeordnete/biografien/A/abdi_sanae-861028")
+    for link in lines: 
+        r = requests.get(link)
         req = r.content
         soup = BeautifulSoup(req, "lxml")
-        person = soup.find(class_="bt-biografie-name").find("h3").text
-        person_name_company = person.strip().split(",")
-        person_name = person_name_company[0]
-        person_company = person_name_company[1]
-        print(person_company)
-        print(person_name)
+        # person = soup.find(class_="bt-biografie-name").find("h3").text
+        # person_name_company = person.strip().split(",")
+        # person_name = person_name_company[0].strip()
+        # person_company = person_name_company[1].strip()
+        # person_profession = soup.find("div", class_="bt-biografie-beruf").find('p').text
+        # person_social = soup.find("ul", class_="bt-linkliste").find_all("li")
+        
+        for links in person_social:
+            add_link = links.find("a").get("href")
+            person_social_links.append(add_link)
+        print(person_social_links)
+
+        # persons_info = {
+        #         "person_name": person_name,
+        #         "person_company": person_company,
+        #         "person_profession": person_profession,
+        #         "person_social": person_social_links
+        # }
+            
+        # data.append(persons_info)
+        
+        # with open("persons.json", "a", encoding="utf-8") as file:
+        #     json.dump(data, file, indent=4, ensure_ascii=False)
