@@ -3,12 +3,13 @@ from bs4 import BeautifulSoup
 import json
 
 links_list = []
-for i in range(0, 740,20): #740
+for i in range(0, 740, 20): #740
     url = f"https://www.bundestag.de/ajax/filterlist/de/abgeordnete/biografien/862712-862712?limit=20&noFilterSet=true&offset={i}"
-    request = requests.get(url=url)
     
+    request = requests.get(url=url)
     soup = BeautifulSoup(request.text, "lxml")
     person_links = soup.find_all("a")
+
     for link in person_links:
         person_link = link.get("href")
         links_list.append(person_link)
